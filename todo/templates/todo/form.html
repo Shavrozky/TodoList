@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+
+    <title>Todo App</title>
+
+    <style>
+      body {
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Task Form</h1>
+
+      <div>
+        <a href="{% url 'todo:index' %}" class="btn btn-success"
+          >Back to List</a
+        >
+      </div>
+
+      <br />
+
+      <div>
+        <!-- meload package untuk merender form field -->
+        {% load widget_tweaks %}
+
+        <form method="post" novalidate>
+            <!-- Menambahkan CSRF field untuk keamanan form -->
+            {% csrf_token %}
+        
+            <!-- Menampilkan semua error yang tidak terkait dengan field tertentu -->
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        
+            <!-- Merender semua field dari objek TaskForm -->
+            {% for field in form.visible_fields %}
+            <div class="form-group">
+                {{ field.label_tag }}
+        
+                {% if form.is_bound %}
+                    {% if field.errors %}
+                        <!-- Field dengan error akan diberikan class 'is-invalid' -->
+                        {% render_field field class="form-control is-invalid" %}
+                        {% for error in field.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Field yang valid akan diberikan class 'is-valid' -->
+                        {% render_field field class="form-control is-valid" %}
+                    {% endif %}
+                {% else %}
+                    <!-- Field tanpa error atau validasi -->
+                    {% render_field field class="form-control" %}
+                {% endif %}
+        
+                <!-- Menampilkan teks bantuan jika ada -->
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+        
+            <!-- Tombol Submit -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
